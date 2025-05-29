@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8004:8004"
+    environment:
+      - ENVIRONMENT=production
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8004
+    restart: always
+    volumes:
+      - sqlite_data:/app/app/database
+
+volumes:
+  sqlite_data:
+    driver: local

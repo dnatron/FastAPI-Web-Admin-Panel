@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Kontakt - FastAPI Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-envelope me-2"></i> Kontaktujte nás
+                </h2>
+            </div>
+            <div class="card-body">
+                <!-- Formulář pro kontakt s HTMX -->
+                <form hx-post="/kontakt/odeslat" hx-swap="outerHTML" hx-target="#form-result">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Vaše jméno *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Váš email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Předmět *</label>
+                        <input type="text" class="form-control" id="subject" name="subject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Zpráva *</label>
+                        <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                            Odeslat zprávu
+                        </button>
+                    </div>
+                </form>
+                <div id="form-result" class="mt-3"></div>
+            </div>
+        </div>
+        
+        <div class="card shadow mt-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i> Informace
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-map-marker-alt text-primary me-2"></i> Adresa</h5>
+                        <p>
+                            FastAPI Admin Panel<br>
+                            Výroba 123<br>
+                            123 45 Brno<br>
+                            Česká republika
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-phone text-primary me-2"></i> Kontaktní údaje</h5>
+                        <p>
+                            <strong>Telefon:</strong> +420 123 456 789<br>
+                            <strong>Email:</strong> info@fastapiadmin.cz<br>
+                            <strong>Pracovní doba:</strong> Pondělí - Pátek, 9:00 - 17:00
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h5><i class="fas fa-question-circle text-primary me-2"></i> Často kladené otázky</h5>
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                    Jak mohu získat přístup k administrátorskému účtu?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Administrátorský účet může vytvořit pouze stávající administrátor. Kontaktujte nás pomocí kontaktního formuláře s vaší žádostí.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Zapomal jsem heslo. Jak ho mohu obnovit?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Pokud jste zapomněli heslo, můžete použít funkci "Zapomenuté heslo" na přihlašovací stránce. Následně vám bude zaslán email s pokyny k obnovení hesla.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Je aplikace dostupná i v jiných jazycích?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    V současné době je aplikace dostupná pouze v češtině. Pracujeme však na podpoře dalších jazyků, které budou dostupné v budoucích verzích.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Zobrazení spinneru při odesílání formuláře
+    document.addEventListener('htmx:beforeRequest', function(event) {
+        if (event.detail.elt.tagName === 'FORM') {
+            const spinner = event.detail.elt.querySelector('.spinner-border');
+            if (spinner) spinner.classList.remove('d-none');
+        }
+    });
+    document.addEventListener('htmx:afterRequest', function(event) {
+        const spinner = event.detail.elt.querySelector('.spinner-border');
+        if (spinner) spinner.classList.add('d-none');
+    });
+    
+    // Simulace odeslání formuláře (HTMX endpoint není implementován)
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Zobrazení potvrzení bez reálného odeslání (jen pro ukázku)
+        setTimeout(function() {
+            document.getElementById('form-result').innerHTML = 
+                '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                '<i class="fas fa-check-circle me-2"></i> Vaše zpráva byla úspěšně odeslána! Budeme vás kontaktovat co nejdříve.' +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                '</div>';
+            
+            // Reset formuláře
+            document.querySelector('form').reset();
+        }, 1000);
+        
+        return false;
+    });
+</script>
+{% endblock %}

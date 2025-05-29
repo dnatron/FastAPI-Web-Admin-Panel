@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Profil uživatele - FastAPI Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-user-circle me-2"></i> Profil uživatele
+                </h2>
+            </div>
+            <div class="card-body">
+                <!-- Formulář pro úpravu profilu s HTMX -->
+                <form hx-post="/users/profile" hx-swap="outerHTML">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">Uživatelské jméno</label>
+                            <input type="text" class="form-control" id="username" value="{{ user.username }}" disabled>
+                            <div class="form-text">Uživatelské jméno nelze změnit.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">Celé jméno</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" value="{{ user.full_name or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Nové heslo</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Ponechte prázdné pro zachování stávajícího hesla">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password_confirm" class="form-label">Potvrzení nového hesla</label>
+                        <input type="password" class="form-control" id="password_confirm" placeholder="Potvrďte nové heslo">
+                        <div id="password-match-feedback" class="form-text"></div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                            Uložit změny
+                        </button>
+                        <a href="/dashboard" class="btn btn-outline-secondary">Zpět na dashboard</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card shadow mt-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-shield-alt me-2"></i> Informace o účtu
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>ID uživatele:</strong> {{ user.id }}</p>
+                        <p><strong>Datum registrace:</strong> {{ user.created_at.strftime('%d.%m.%Y %H:%M') if user.created_at else 'Neuvedeno' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>
+                            <strong>Role:</strong> 
+                            {% if user.role == 'admin' %}
+                            <span class="badge bg-danger">Administrátor</span>
+                            {% else %}
+                            <span class="badge bg-primary">Uživatel</span>
+                            {% endif %}
+                        </p>
+                        <p>
+                            <strong>Status:</strong> 
+                            {% if user.is_active %}
+                            <span class="badge bg-success">Aktivní</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Neaktivní</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Kontrola shody hesel
+    document.querySelector('#password_confirm').addEventListener('input', function() {
+        const password = document.querySelector('#password').value;
+        const confirmPassword = this.value;
+        const feedback = document.querySelector('#password-match-feedback');
+        
+        if (confirmPassword === '') {
+            feedback.innerHTML = '';
+            feedback.className = 'form-text';
+        } else if (password === confirmPassword) {
+            feedback.innerHTML = 'Hesla se shodují';
+            feedback.className = 'form-text text-success';
+        } else {
+            feedback.innerHTML = 'Hesla se neshodují';
+            feedback.className = 'form-text text-danger';
+        }
+    });
+    
+    // Zobrazení spinneru při odesílání formuláře
+    document.addEventListener('htmx:beforeRequest', function(event) {
+        if (event.detail.elt.tagName === 'FORM') {
+            const spinner = event.detail.elt.querySelector('.spinner-border');
+            if (spinner) spinner.classList.remove('d-none');
+        }
+    });
+    document.addEventListener('htmx:afterRequest', function(event) {
+        const spinner = event.detail.elt.querySelector('.spinner-border');
+        if (spinner) spinner.classList.add('d-none');
+    });
+    
+    // Ověření formuláře před odesláním
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const password = document.querySelector('#password').value;
+        const confirmPassword = document.querySelector('#password_confirm').value;
+        
+        if (password && password !== confirmPassword) {
+            e.preventDefault();
+            alert('Hesla se neshodují. Prosím, opravte je.');
+            return false;
+        }
+        
+        return true;
+    });
+</script>
+{% endblock %}

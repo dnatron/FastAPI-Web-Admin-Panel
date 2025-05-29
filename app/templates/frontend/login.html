@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Přihlášení - FastAPI Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-sign-in-alt me-2"></i> Přihlášení uživatele
+                </h2>
+            </div>
+            <div class="card-body">
+                <!-- Formulář pro přihlášení s HTMX -->
+                <form hx-post="/auth/login" hx-swap="outerHTML">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Uživatelské jméno</label>
+                        <input type="text" class="form-control" id="username" name="username" required placeholder="Zadejte uživatelské jméno">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Heslo</label>
+                        <input type="password" class="form-control" id="password" name="password" required placeholder="Zadejte heslo">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                            Přihlásit se
+                        </button>
+                    </div>
+                </form>
+                <hr>
+                <div class="text-center">
+                    <p>Ještě nemáte účet? <a href="/auth/register">Zaregistrujte se</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Zobrazení spinneru při odesílání formuláře
+    document.addEventListener('htmx:beforeRequest', function(event) {
+        if (event.detail.elt.tagName === 'FORM') {
+            const spinner = event.detail.elt.querySelector('.spinner-border');
+            if (spinner) spinner.classList.remove('d-none');
+        }
+    });
+    document.addEventListener('htmx:afterRequest', function(event) {
+        const spinner = event.detail.elt.querySelector('.spinner-border');
+        if (spinner) spinner.classList.add('d-none');
+    });
+</script>
+{% endblock %}

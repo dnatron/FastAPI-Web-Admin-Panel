@@ -1,0 +1,117 @@
+/* Custom styles for the FastAPI Admin Panel */
+
+/* Global styles */
+:root {
+    --primary-color: #0d6efd;
+    --primary-dark: #0a58ca;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Header styles */
+.navbar-brand {
+    font-weight: bold;
+}
+
+/* Card styles */
+.card {
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: none;
+}
+
+.card-header {
+    font-weight: 500;
+}
+
+/* Button styles */
+.btn {
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+/* Form styles */
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Table styles */
+.table th {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Animations for HTMX */
+.htmx-indicator {
+    opacity: 0;
+    transition: opacity 200ms ease-in;
+}
+.htmx-request .htmx-indicator {
+    opacity: 1;
+}
+.htmx-request.htmx-indicator {
+    opacity: 1;
+}
+
+/* Login and Registration form */
+.auth-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Dashboard stats */
+.stat-card {
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* User profile page */
+.profile-header {
+    background-color: var(--light-color);
+    padding: 20px;
+    border-radius: 5px;
+}
+
+/* Admin specific styles */
+.admin-tools .btn {
+    margin-bottom: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.2rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*/__pycache__/
+**/__pycache__/
+*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtualenv
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Local environment files
+.env
+.env.local
+
+# Docker
+.dockerignore
+
+# Distribution / packaging
+.Python
+
+# Sample Code
+Sample-Code/

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Registrace - FastAPI Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-user-plus me-2"></i> Registrace nového uživatele
+                </h2>
+            </div>
+            <div class="card-body">
+                <!-- Formulář pro registraci s HTMX -->
+                <form hx-post="/auth/register" hx-swap="outerHTML">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">Uživatelské jméno *</label>
+                            <input type="text" class="form-control" id="username" name="username" required 
+                                   placeholder="Zadejte uživatelské jméno" 
+                                   hx-post="/auth/check-username" 
+                                   hx-trigger="blur" 
+                                   hx-target="#username-feedback">
+                            <div id="username-feedback" class="form-text"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required 
+                                   placeholder="Zadejte email" 
+                                   hx-post="/auth/check-email" 
+                                   hx-trigger="blur" 
+                                   hx-target="#email-feedback">
+                            <div id="email-feedback" class="form-text"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">Celé jméno</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" 
+                               placeholder="Zadejte celé jméno">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">Heslo *</label>
+                            <input type="password" class="form-control" id="password" name="password" required 
+                                   placeholder="Zadejte heslo">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="password_confirm" class="form-label">Potvrzení hesla *</label>
+                            <input type="password" class="form-control" id="password_confirm" name="password_confirm" required 
+                                   placeholder="Potvrďte heslo">
+                            <div id="password-match-feedback" class="form-text"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="agree_terms" name="agree_terms" required>
+                        <label class="form-check-label" for="agree_terms">Souhlasím s podmínkami používání *</label>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                            Registrovat se
+                        </button>
+                    </div>
+                </form>
+                <hr>
+                <div class="text-center">
+                    <p>Již máte účet? <a href="/auth/login">Přihlaste se</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Kontrola shody hesel
+    document.querySelector('#password_confirm').addEventListener('input', function() {
+        const password = document.querySelector('#password').value;
+        const confirmPassword = this.value;
+        const feedback = document.querySelector('#password-match-feedback');
+        
+        if (confirmPassword === '') {
+            feedback.innerHTML = '';
+            feedback.className = 'form-text';
+        } else if (password === confirmPassword) {
+            feedback.innerHTML = 'Hesla se shodují';
+            feedback.className = 'form-text text-success';
+        } else {
+            feedback.innerHTML = 'Hesla se neshodují';
+            feedback.className = 'form-text text-danger';
+        }
+    });
+    
+    // Zobrazení spinneru při odesílání formuláře
+    document.addEventListener('htmx:beforeRequest', function(event) {
+        if (event.detail.elt.tagName === 'FORM') {
+            const spinner = event.detail.elt.querySelector('.spinner-border');
+            if (spinner) spinner.classList.remove('d-none');
+        }
+    });
+    document.addEventListener('htmx:afterRequest', function(event) {
+        const spinner = event.detail.elt.querySelector('.spinner-border');
+        if (spinner) spinner.classList.add('d-none');
+    });
+    
+    // Ověření formuláře před odesláním
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const password = document.querySelector('#password').value;
+        const confirmPassword = document.querySelector('#password_confirm').value;
+        
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Hesla se neshodují. Prosím, opravte je.');
+            return false;
+        }
+        
+        return true;
+    });
+</script>
+{% endblock %}
