@@ -12,8 +12,8 @@
                 </h2>
             </div>
             <div class="card-body">
-                <!-- Formulář pro přihlášení s HTMX -->
-                <form hx-post="/auth/login" hx-swap="outerHTML">
+                <!-- Formulář pro přihlášení - standardní formulář bez HTMX -->
+                <form action="/auth/login" method="post">
                     <div class="mb-3">
                         <label for="username" class="form-label">Uživatelské jméno</label>
                         <input type="text" class="form-control" id="username" name="username" required placeholder="Zadejte uživatelské jméno">

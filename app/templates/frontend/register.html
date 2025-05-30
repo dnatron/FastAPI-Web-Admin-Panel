@@ -12,8 +12,8 @@
                 </h2>
             </div>
             <div class="card-body">
-                <!-- Formulář pro registraci s HTMX -->
-                <form hx-post="/auth/register" hx-swap="outerHTML">
+                <!-- Formulář pro registraci - standardní formulář bez HTMX pro hlavní submit -->
+                <form action="/auth/register" method="post">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="username" class="form-label">Uživatelské jméno *</label>

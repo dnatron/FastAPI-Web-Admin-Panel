@@ -99,8 +99,7 @@ Komplexní webová aplikace s administračním rozhraním, registrací a přihl�
 ### Výchozí admin přihlašovací údaje
 
 ```
-Uživatelské jméno: admin
-Heslo: admin123
+Při registraci prvního uživatele bude vytvořen uživatel s rolí admin
 ```
 
 > **Poznámka**: Po prvním přihlášení si změňte heslo!

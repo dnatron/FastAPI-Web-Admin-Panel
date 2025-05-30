@@ -133,11 +133,18 @@ async def register_user(
     session.commit()
     session.refresh(new_user)
     
-    # Přesměrování na přihlašovací stránku s úspěšnou zprávou
-    return templates.TemplateResponse(
-        "frontend/login.html", 
-        {"request": request, "success": "Registrace byla úspěšná, nyní se můžete přihlásit"}
+    # Automatické přihlášení uživatele po registraci
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": new_user.username, "role": new_user.role}, 
+        expires_delta=access_token_expires
     )
+    
+    # Přesměrování na dashboard s tokenem v cookie
+    response = RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+    response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True)
+    
+    return response
 
 # Endpoint pro odhlášení
 @router.get("/logout")
